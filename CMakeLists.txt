@@ -834,6 +834,38 @@ cocos_source_files(
                  cocos/renderer/pipeline/helper/SharedMemory.cpp
 )
 
+##### scene
+cocos_source_files(
+                 cocos/scene/AABB.h
+                 cocos/scene/BakedSkinningModel.h
+                 cocos/scene/BakedSkinningModel.cpp
+                 cocos/scene/Camera.h
+                 cocos/scene/Define.h
+                 cocos/scene/DirectionalLight.h
+                 cocos/scene/DirectionalLight.cpp
+                 cocos/scene/DrawBatch2D.h
+                 cocos/scene/Frustum.h
+                 cocos/scene/Light.h
+                 cocos/scene/Light.cpp
+                 cocos/scene/Model.h
+                 cocos/scene/Model.cpp
+                 cocos/scene/Node.h
+                 cocos/scene/Node.cpp
+                 cocos/scene/Pass.h
+                 cocos/scene/Pass.cpp
+                 cocos/scene/RenderScene.h
+                 cocos/scene/RenderScene.cpp
+                 cocos/scene/RenderWindow.h
+                 cocos/scene/SkinningModel.h
+                 cocos/scene/SkinningModel.cpp
+                 cocos/scene/SphereLight.h
+                 cocos/scene/SphereLight.cpp
+                 cocos/scene/SpotLight.h
+                 cocos/scene/SpotLight.cpp
+                 cocos/scene/SubModel.h
+                 cocos/scene/SubModel.cpp
+)
+
 if(CC_USE_GLES2 OR CC_USE_GLES3)
 cocos_source_files(
                  cocos/renderer/gfx-gles-common/GLESCommandPool.h
