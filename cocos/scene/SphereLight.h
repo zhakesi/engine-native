@@ -34,22 +34,34 @@ namespace scene {
 
 class SphereLight : public Light {
 public:
-    SphereLight() = default;
+    SphereLight()                    = default;
     SphereLight(const SphereLight &) = delete;
-    SphereLight(SphereLight &&) = delete;
-    ~SphereLight() override =  default;
+    SphereLight(SphereLight &&)      = delete;
+    ~SphereLight() override          = default;
     SphereLight &operator=(const SphereLight &) = delete;
     SphereLight &operator=(SphereLight &&) = delete;
-    
-    void update();
-    
+
+    void update() override;
+
+    inline void setAABB(AABB aabb) { _aabb = std::move(aabb); }
+    inline void setIllumiance(float illum) { _illuminance = illum; }
+    inline void setPos(const Vec3& pos) { _pos = pos; }
+    inline void setRange(float range) { _range = range; }
+    inline void setSize(float size) { _size = size; }
+
+    inline const AABB &getAABB() const { return _aabb; }
+    inline float       getIllumiance() const { return _illuminance; }
+    inline const Vec3 &getPos() const { return _pos; }
+    inline float       getRange() const { return _range; }
+    inline float       getSize() const { return _size; }
+
 private:
     float _illuminance{0.F};
     float _range{0.F};
     float _size{0.F};
-    Vec3 _pos;
-    AABB _aabb;
+    Vec3  _pos;
+    AABB  _aabb;
 };
 
-}  // namespace scene
-}  // namespace cc
+} // namespace scene
+} // namespace cc

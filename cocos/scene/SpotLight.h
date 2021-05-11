@@ -41,18 +41,18 @@ public:
     SpotLight &operator=(const SpotLight &) = delete;
     SpotLight &operator=(SpotLight &&) = delete;
 
-    void update();
+    void update() override;
 
-    void setAABB(AABB);
-    void setAngle(float);
-    void setAspect(float);
-    void setDir(Vec3 dir);
-    void setFrustum(Frustum);
-    void setIlluminace(float);
-    void setNeedUpdate(bool);
-    void setRange(float);
-    void setPos(Vec3);
-    void setSize(float);
+    inline void setAABB(AABB aabb) { _aabb = std::move(aabb); }
+    inline void setAngle(float angle) { _angle = angle; }
+    inline void setAspect(float aspect) { _aspect = aspect; }
+    inline void setDir(const Vec3& dir) { _dir = dir; }
+    inline void setFrustum(Frustum frustum) { _frustum = std::move(frustum); }
+    inline void setIlluminace(float illu) { _illuminance = illu; }
+    inline void setNeedUpdate(bool value) { _needUpdate = value; }
+    inline void setRange(float range) { _range = range; }
+    inline void setPos(const Vec3& pos) { _pos = pos; }
+    inline void setSize(float size) { _size = size; }
 
     inline const AABB &   getAABB() const { return _aabb; }
     inline float          getAngle() const { return _angle; }

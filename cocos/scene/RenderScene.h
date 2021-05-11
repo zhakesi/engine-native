@@ -26,7 +26,6 @@
 #pragma once
 
 #include <vector>
-#include "scene/Camera.h"
 #include "scene/DirectionalLight.h"
 #include "scene/DrawBatch2D.h"
 #include "scene/Model.h"
@@ -47,12 +46,6 @@ public:
 
     void update();
 
-    void addCamera(Camera *);
-    void removeCamera();
-    void removeCameras();
-
-    void setMainLight(DirectionalLight *);
-
     void addSphereLight(SphereLight *);
     void removeSphereLight(SphereLight *);
     void removeSphereLights();
@@ -68,6 +61,8 @@ public:
     void addBatch(DrawBatch2D *);
     void removeBatch(DrawBatch2D *);
     void removeBatches();
+
+    inline void setMainLight(DirectionalLight *light) { _directionalLight = light; }
 
     inline const std::vector<DrawBatch2D *> &getDrawBatch2Ds() const { return _drawBatch2Ds; }
     inline DirectionalLight *                getMainLight() const { return _directionalLight; }

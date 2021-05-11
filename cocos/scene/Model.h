@@ -50,8 +50,35 @@ public:
     virtual void updateTransform();
     virtual void updateUBOs(uint32_t);
 
+    inline void setCastShadow(bool value) { _castShadow = value; }
+    inline void setEnabled(bool value) { _enabled = value; }
+    inline void setInstmatWorldIdx(uint32_t idx) { _instmatWorldIdx = idx; }
+    inline void setInstancedAttributeBlock(InstancedAttributeBlock *block) { _instanceAttributeBlock = block; }
+    inline void setInstanceBuffer(gfx::Buffer *buffer) { _instanceBuffer = buffer; }
+    inline void setLocalBuffer(gfx::Buffer *buffer) { _localBuffer = buffer; }
+    inline void setLocalData(float *data) { _localData = data; }
+    inline void setReceiveShadow(bool value) { _receiveShadow = value; }
+    inline void setTransform(Node *node) { _transform = node; }
+    inline void seVisFlag(uint32_t flags) { _visFlags = flags; }
+    inline void setWolrdBounds(AABB aabb) { _worldBounds = std::move(aabb); }
+
+    inline bool                           getCastShadow() const { return _castShadow; }
+    inline bool                           getEnabled() const { return _enabled; }
+    inline uint32_t                       getInstmatWorldIdx() const { return _instmatWorldIdx; }
+    inline InstancedAttributeBlock *      getInstancedAttributeBlock() const { return _instanceAttributeBlock; }
+    inline gfx::Buffer *                  getInstanceBuffer() const { return _instanceBuffer; }
+    inline gfx::Buffer *                  getLocalBuffer() const { return _localBuffer; }
+    inline float *                        getLocalData() const { return _localData; }
+    inline const AABB &                   getModelBounds() const { return _modelBounds; }
+    inline bool                           getReceiveShadow() const { return _receiveShadow; }
+    inline const std::vector<SubModel *> &getSubModels() const { return _subModels; }
+    inline Node *                         getTransform() const { return _transform; }
+    inline bool                           getTransformUpdated() const { return _transformUpdated; }
+    inline uint32_t                       getUpdatStamp() const { return _updateStamp; }
+    inline uint32_t                       getVisFlags() const { return _visFlags; }
+    inline const AABB &                   getWorldBounds() const { return _worldBounds; }
+
 private:
-    bool                     _dirtyFlags{false};
     bool                     _enabled{false};
     bool                     _castShadow{false};
     bool                     _receiveShadow{false};
@@ -60,7 +87,7 @@ private:
     uint32_t                 _visFlags;
     uint32_t                 _updateStamp{0};
     Node *                   _transform{nullptr};
-    uint8_t *                _localData{nullptr};
+    float *                  _localData{nullptr};
     gfx::Buffer *            _instanceBuffer{nullptr};
     gfx::Buffer *            _localBuffer{nullptr};
     AABB                     _worldBounds;

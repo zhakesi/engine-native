@@ -39,5 +39,10 @@ enum class RenderPassStage {
     UI      = 200,
 };
 
+enum class BatchingSchemes {
+    INSTANCING = 1,
+    VB_MERGING = 2,
+};
+
 } // namespace scene
 } // namespace cc

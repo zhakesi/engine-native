@@ -28,5 +28,8 @@
 namespace cc {
 namespace scene {
 
+void SphereLight::update() {
+}
+
 } // namespace scene
 } // namespace cc

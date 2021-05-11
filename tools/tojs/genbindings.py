@@ -155,7 +155,8 @@ def main():
             'spine.ini': ('spine','jsb_spine_auto'),
             'editor_support.ini': ('editor_support','jsb_editor_support_auto'),
             'dragonbones.ini': ('dragonbones','jsb_dragonbones_auto'),
-            'physics.ini': ('physics','jsb_physics_auto')
+            'physics.ini': ('physics','jsb_physics_auto'),
+            'scene.ini': ('scene','jsb_scene_auto')
         }
 
         target = 'spidermonkey'

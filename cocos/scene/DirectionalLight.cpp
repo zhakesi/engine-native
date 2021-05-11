@@ -28,5 +28,8 @@
 namespace cc {
 namespace scene {
 
+void DirectionalLight::update() {
+}
+
 } // namesapce scene
 } // namespace cc

@@ -28,5 +28,8 @@
 namespace cc {
 namespace scene {
 
+void Node::updateWorldTransform() {
+}
+
 } // namespace scene
 } // namespace cc

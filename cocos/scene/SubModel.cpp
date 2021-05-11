@@ -27,5 +27,8 @@
 namespace cc {
 namespace scene {
 
+void SubModel::update() {
+}
+
 } // namespace scene
 } // namespace cc

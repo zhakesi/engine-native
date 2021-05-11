@@ -40,10 +40,10 @@ public:
     DirectionalLight &operator=(const DirectionalLight &) = delete;
     DirectionalLight &operator=(DirectionalLight &&) = delete;
 
-    void update();
+    void update() override;
 
-    void setDir(Vec3);
-    void setIlluminance(float);
+    inline void setDir(const Vec3& dir) { _dir = dir; }
+    inline void setIlluminance(float illum) { _illuminance = illum; }
 
     inline const Vec3 &getDir() const { return _dir; }
     inline float       getIlluminance() const { return _illuminance; }

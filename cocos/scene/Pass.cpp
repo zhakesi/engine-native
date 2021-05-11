@@ -28,6 +28,9 @@
 namespace cc {
 namespace scene {
 
+void Pass::update() {
+}
+
 } // namespace scene
 } // namespace cc
 

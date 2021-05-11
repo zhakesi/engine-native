@@ -24,9 +24,81 @@
  ****************************************************************************/
 
 #include "scene/RenderScene.h"
+#include "base/Log.h"
 
 namespace cc {
 namespace scene {
+
+void RenderScene::update() {
+}
+
+void RenderScene::addSphereLight(SphereLight *light) {
+    _sphereLights.push_back(light);
+}
+
+void RenderScene::removeSphereLight(SphereLight *sphereLight) {
+    auto iter = std::find(_sphereLights.begin(), _sphereLights.end(), sphereLight);
+    if (iter != _sphereLights.end()) {
+        _sphereLights.erase(iter);
+    } else {
+        CC_LOG_WARNING("Try to remove invalid sphere light.");
+    }
+}
+
+void RenderScene::removeSphereLights() {
+    _sphereLights.clear();
+}
+
+void RenderScene::addSpotLight(SpotLight *spotLight) {
+    _spotLights.push_back(spotLight);
+}
+
+void RenderScene::removeSpotLight(SpotLight *spotLight) {
+    auto iter = std::find(_spotLights.begin(), _spotLights.end(), spotLight);
+    if (iter != _spotLights.end()) {
+        _spotLights.erase(iter);
+    } else {
+        CC_LOG_WARNING("Try to remove invalid spot light.");
+    }
+}
+
+void RenderScene::removeSpotLights() {
+    _sphereLights.clear();
+}
+
+void RenderScene::addModel(Model *model) {
+    _models.push_back(model);
+}
+
+void RenderScene::removeModel(Model *model) {
+    auto iter = std::find(_models.begin(), _models.end(), model);
+    if (iter != _models.end()) {
+        _models.erase(iter);
+    } else {
+        CC_LOG_WARNING("Try to remove invalid model.");
+    }
+}
+
+void RenderScene::removeModels() {
+    _models.clear();
+}
+
+void RenderScene::addBatch(DrawBatch2D *drawBatch2D) {
+    _drawBatch2Ds.push_back(drawBatch2D);
+}
+
+void RenderScene::removeBatch(DrawBatch2D *drawBatch2D) {
+    auto iter = std::find(_drawBatch2Ds.begin(), _drawBatch2Ds.end(), drawBatch2D);
+    if (iter != _drawBatch2Ds.end()) {
+        _drawBatch2Ds.erase(iter);
+    } else {
+        CC_LOG_WARNING("Try to remove invalid DrawBatch2D.");
+    }
+}
+
+void RenderScene::removeBatches() {
+    _drawBatch2Ds.clear();
+}
 
 } // namespace scene
 } // namespace cc
