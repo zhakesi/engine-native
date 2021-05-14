@@ -116,7 +116,7 @@ void ForwardStage::destroy() {
     RenderStage::destroy();
 }
 
-void ForwardStage::render(Camera *camera) {
+void ForwardStage::render(Camera *camera, scene::Camera *newCamera) {
     _instancedQueue->clear();
     _batchedQueue->clear();
     auto *pipeline = static_cast<ForwardPipeline *>(_pipeline);
@@ -169,35 +169,35 @@ void ForwardStage::render(Camera *camera) {
     _planarShadowQueue->gatherShadowPasses(camera, cmdBuff);
 
     // render area is not oriented
-    uint w = camera->getWindow()->hasOnScreenAttachments && static_cast<uint>(_device->getSurfaceTransform()) % 2 ? camera->height : camera->width;
-    uint h = camera->getWindow()->hasOnScreenAttachments && static_cast<uint>(_device->getSurfaceTransform()) % 2 ? camera->width : camera->height;
-    _renderArea.x = static_cast<int>(camera->viewportX * w);
-    _renderArea.y = static_cast<int>(camera->viewportY * h);
-    _renderArea.width = static_cast<uint>(camera->viewportWidth * w * sharedData->shadingScale);
-    _renderArea.height = static_cast<uint>(camera->viewportHeight * h * sharedData->shadingScale);
+    uint w = camera->getWindow()->hasOnScreenAttachments && static_cast<uint>(_device->getSurfaceTransform()) % 2 ? newCamera->height : newCamera->width;
+    uint h = camera->getWindow()->hasOnScreenAttachments && static_cast<uint>(_device->getSurfaceTransform()) % 2 ? newCamera->width : newCamera->height;
+    _renderArea.x = static_cast<int>(newCamera->viewPort.x * w);
+    _renderArea.y = static_cast<int>(newCamera->viewPort.y * h);
+    _renderArea.width = static_cast<uint>(newCamera->viewPort.z * w * sharedData->shadingScale);
+    _renderArea.height = static_cast<uint>(newCamera->viewPort.w * h * sharedData->shadingScale);
 
-    if (hasFlag(static_cast<gfx::ClearFlags>(camera->clearFlag), gfx::ClearFlagBit::COLOR)) {
+    if (hasFlag(static_cast<gfx::ClearFlags>(newCamera->clearFlag), gfx::ClearFlagBit::COLOR)) {
         if (sharedData->isHDR) {
-            srgbToLinear(&_clearColors[0], camera->clearColor);
-            auto scale = sharedData->fpScale / camera->exposure;
+            srgbToLinear(&_clearColors[0], newCamera->clearColor);
+            auto scale = sharedData->fpScale / newCamera->exposure;
             _clearColors[0].x *= scale;
             _clearColors[0].y *= scale;
             _clearColors[0].z *= scale;
         } else {
-            _clearColors[0].x = camera->clearColor.x;
-            _clearColors[0].y = camera->clearColor.y;
-            _clearColors[0].z = camera->clearColor.z;
+            _clearColors[0].x = newCamera->clearColor.x;
+            _clearColors[0].y = newCamera->clearColor.y;
+            _clearColors[0].z = newCamera->clearColor.z;
         }
     }
 
-    _clearColors[0].w = camera->clearColor.w;
+    _clearColors[0].w = newCamera->clearColor.w;
 
     auto *framebuffer = camera->getWindow()->getFramebuffer();
     const auto &colorTextures = framebuffer->getColorTextures();
 
-    auto *renderPass = !colorTextures.empty() && colorTextures[0] ? framebuffer->getRenderPass() : pipeline->getOrCreateRenderPass(static_cast<gfx::ClearFlagBit>(camera->clearFlag));
+    auto *renderPass = !colorTextures.empty() && colorTextures[0] ? framebuffer->getRenderPass() : pipeline->getOrCreateRenderPass(static_cast<gfx::ClearFlagBit>(newCamera->clearFlag));
 
-    cmdBuff->beginRenderPass(renderPass, framebuffer, _renderArea, _clearColors, camera->clearDepth, camera->clearStencil);
+    cmdBuff->beginRenderPass(renderPass, framebuffer, _renderArea, _clearColors, newCamera->clearDepth, newCamera->clearStencil);
     cmdBuff->bindDescriptorSet(globalSet, _pipeline->getDescriptorSet());
 
     _renderQueues[0]->recordCommandBuffer(_device, renderPass, cmdBuff);

@@ -249,7 +249,7 @@ void LightingStage::destroy() {
     RenderStage::destroy();
 }
 
-void LightingStage::render(Camera *camera) {
+void LightingStage::render(Camera *camera, scene::Camera *newCamera) {
     auto *pipeline = static_cast<DeferredPipeline *>(_pipeline);
     auto *const sceneData = _pipeline->getPipelineSceneData();
     auto *const sharedData = sceneData->getSharedData();
@@ -272,15 +272,15 @@ void LightingStage::render(Camera *camera) {
     gfx::Rect renderArea = pipeline->getRenderArea(camera, false);
 
     gfx::Color clearColor = {0.0, 0.0, 0.0, 1.0};
-    if (camera->clearFlag & static_cast<uint>( gfx::ClearFlagBit::COLOR)) {
+    if (newCamera->clearFlag & static_cast<uint>( gfx::ClearFlagBit::COLOR)) {
         if (sharedData->isHDR) {
-            srgbToLinear(&clearColor, camera->clearColor);
-            const auto scale = sharedData->fpScale / camera->exposure;
+            srgbToLinear(&clearColor, newCamera->clearColor);
+            const auto scale = sharedData->fpScale / newCamera->exposure;
             clearColor.x *= scale;
             clearColor.y *= scale;
             clearColor.z *= scale;
         } else {
-            clearColor = camera->clearColor;
+            clearColor = newCamera->clearColor;
         }
     }
 
@@ -291,7 +291,7 @@ void LightingStage::render(Camera *camera) {
     auto *renderPass = frameBuffer->getRenderPass();
 
     cmdBuff->beginRenderPass(renderPass, frameBuffer, renderArea, &clearColor,
-       camera->clearDepth, camera->clearStencil);
+                             newCamera->clearDepth, newCamera->clearStencil);
 
     cmdBuff->bindDescriptorSet(static_cast<uint>(SetIndex::GLOBAL), pipeline->getDescriptorSet());
 
