@@ -30,5 +30,21 @@ namespace scene {
 void SubModel::update() {
 }
 
+gfx::Shader *SubModel::getShader(int index) const {
+    if (index >= static_cast<int>(_shaders.size())) {
+        return nullptr;
+    }
+
+    return _shaders[index];
+}
+
+Pass *SubModel::getPass(int index) const {
+    if (index >= static_cast<int>(_passes.size())) {
+        return nullptr;
+    }
+
+    return _passes[index];
+}
+
 } // namespace scene
 } // namespace cc

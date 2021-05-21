@@ -774,6 +774,8 @@ cocos_source_files(
 
                  cocos/renderer/pipeline/BatchedBuffer.cpp
                  cocos/renderer/pipeline/BatchedBuffer.h
+                 cocos/renderer/pipeline/CheckData.h
+                 cocos/renderer/pipeline/CheckData.cpp
                  cocos/renderer/pipeline/Define.h
                  cocos/renderer/pipeline/Define.cpp
                  cocos/renderer/pipeline/InstancedBuffer.cpp
@@ -837,6 +839,7 @@ cocos_source_files(
 ##### scene
 cocos_source_files(
                  cocos/scene/AABB.h
+                 cocos/scene/AABB.cpp
                  cocos/scene/BakedSkinningModel.h
                  cocos/scene/BakedSkinningModel.cpp
                  cocos/scene/Camera.h
@@ -858,6 +861,8 @@ cocos_source_files(
                  cocos/scene/RenderWindow.h
                  cocos/scene/SkinningModel.h
                  cocos/scene/SkinningModel.cpp
+                 cocos/scene/Sphere.h
+                 cocos/scene/Sphere.cpp
                  cocos/scene/SphereLight.h
                  cocos/scene/SphereLight.cpp
                  cocos/scene/SpotLight.h

@@ -26,31 +26,37 @@
 #pragma once
 
 #include "math/Vec3.h"
-#include "scene/Light.h"
+#include "scene/AABB.h"
+#include "scene/Frustum.h"
 
 namespace cc {
 namespace scene {
 
-class DirectionalLight : public Light {
+class Sphere {
 public:
-    DirectionalLight()                         = default;
-    DirectionalLight(const DirectionalLight &) = delete;
-    DirectionalLight(DirectionalLight &&)      = delete;
-    ~DirectionalLight() override               = default;
-    DirectionalLight &operator=(const DirectionalLight &) = delete;
-    DirectionalLight &operator=(DirectionalLight &&) = delete;
+    Sphere()               = default;
+    Sphere(const Sphere &) = delete;
+    Sphere(Sphere &&)      = delete;
+    ~Sphere()              = default;
+    Sphere &operator=(const Sphere &) = delete;
+    Sphere &operator=(Sphere &&) = delete;
 
-    void update() override;
+    inline float       getRadius() const { return _radius; }
+    inline const Vec3 &getCenter() const { return _center; }
+    inline void        setCenter(const Vec3 &val) { _center = val; }
+    inline void        setRadius(float val) { _radius = val; }
 
-    inline void setDirection(const Vec3& dir) { _dir = dir; }
-    inline void setIlluminance(float illum) { _illuminance = illum; }
-
-    inline const Vec3 &getDirection() const { return _dir; }
-    inline float       getIlluminance() const { return _illuminance; }
+    void define(const AABB &aabb);
+    void mergeAABB(const AABB *aabb);
+    void mergePoint(const Vec3 &point);
+    bool interset(const Frustum &frustum) const;
+    int  interset(const Plane &plane) const;
+    int  spherePlane(const Plane &plane);
+    bool sphereFrustum(const Frustum &frustum);
 
 private:
-    float _illuminance{0.F};
-    Vec3  _dir;
+    float _radius{0};
+    Vec3  _center;
 };
 
 } // namespace scene

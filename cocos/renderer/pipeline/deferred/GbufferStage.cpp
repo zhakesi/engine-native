@@ -31,7 +31,6 @@
 #include "../RenderBatchedQueue.h"
 #include "../RenderInstancedQueue.h"
 #include "../RenderQueue.h"
-#include "../helper/SharedMemory.h"
 #include "DeferredPipeline.h"
 #include "gfx-base/GFXCommandBuffer.h"
 #include "gfx-base/GFXDevice.h"
@@ -63,7 +62,7 @@ RenderStageInfo GbufferStage::initInfo = {
 const RenderStageInfo &GbufferStage::getInitializeInfo() { return GbufferStage::initInfo; }
 
 GbufferStage::GbufferStage() {
-    _batchedQueue = CC_NEW(RenderBatchedQueue);
+    _batchedQueue   = CC_NEW(RenderBatchedQueue);
     _instancedQueue = CC_NEW(RenderInstancedQueue);
 }
 
@@ -72,7 +71,7 @@ GbufferStage::~GbufferStage() = default;
 bool GbufferStage::initialize(const RenderStageInfo &info) {
     RenderStage::initialize(info);
     _renderQueueDescriptors = info.renderQueues;
-    _phaseID = getPhaseID("deferred");
+    _phaseID                = getPhaseID("deferred");
     return true;
 }
 
@@ -109,10 +108,10 @@ void GbufferStage::destroy() {
     RenderStage::destroy();
 }
 
-void GbufferStage::render(Camera *camera, scene::Camera *newCamera) {
+void GbufferStage::render(Camera * /*unused*/, scene::Camera *camera) {
     _instancedQueue->clear();
     _batchedQueue->clear();
-    auto *pipeline = static_cast<DeferredPipeline *>(_pipeline);
+    auto *      pipeline      = static_cast<DeferredPipeline *>(_pipeline);
     const auto &renderObjects = _pipeline->getPipelineSceneData()->getRenderObjects();
     if (renderObjects.empty()) {
         return;
@@ -122,33 +121,35 @@ void GbufferStage::render(Camera *camera, scene::Camera *newCamera) {
         queue->clear();
     }
 
-    uint m = 0;
-    uint p = 0;
-    size_t k = 0;
+    uint   subModelIdx = 0;
+    uint   passIdx     = 0;
+    size_t k           = 0;
     for (auto ro : renderObjects) {
         const auto *const model = ro.model;
-        const auto *const subModelID = model->getSubModelID();
-        const auto subModelCount = subModelID[0];
-        for (m = 1; m <= subModelCount; ++m) {
-            const auto *const subModel = cc::pipeline::ModelView::getSubModelView(subModelID[m]);
-            for (p = 0; p < subModel->passCount; ++p) {
-                const PassView *pass = subModel->getPassView(p);
 
-                if (pass->phase != _phaseID) continue;
-                if (pass->getBatchingScheme() == BatchingSchemes::INSTANCING) {
-                    auto *instancedBuffer = InstancedBuffer::get(subModel->passID[p]);
-                    instancedBuffer->merge(model, subModel, p);
+        subModelIdx = 0;
+        for (auto *subModel : model->getSubModels()) {
+            passIdx = 0;
+            for (auto *pass : subModel->getPasses()) {
+                if (pass->getPhase() != _phaseID) continue;
+                if (pass->getBatchingScheme() == scene::BatchingSchemes::INSTANCING) {
+                    auto *instancedBuffer = InstancedBuffer::get(pass);
+                    instancedBuffer->merge(model, subModel, passIdx);
                     _instancedQueue->add(instancedBuffer);
-                } else if (pass->getBatchingScheme() == BatchingSchemes::VB_MERGING) {
-                    auto *batchedBuffer = BatchedBuffer::get(subModel->passID[p]);
-                    batchedBuffer->merge(subModel, p, model);
+                } else if (pass->getBatchingScheme() == scene::BatchingSchemes::VB_MERGING) {
+                    auto *batchedBuffer = BatchedBuffer::get(pass);
+                    batchedBuffer->merge(subModel, passIdx, model);
                     _batchedQueue->add(batchedBuffer);
                 } else {
                     for (k = 0; k < _renderQueues.size(); k++) {
-                        _renderQueues[k]->insertRenderPass(ro, m, p);
+                        _renderQueues[k]->insertRenderPass(ro, subModelIdx, passIdx);
                     }
                 }
+
+                ++passIdx;
             }
+
+            ++subModelIdx;
         }
     }
     for (auto *queue : _renderQueues) {
@@ -164,8 +165,8 @@ void GbufferStage::render(Camera *camera, scene::Camera *newCamera) {
     _renderArea = pipeline->getRenderArea(camera, false);
     pipeline->updateQuadVertexData(_renderArea);
     auto *const deferredData = pipeline->getDeferredRenderData();
-    auto *framebuffer = deferredData->gbufferFrameBuffer;
-    auto *renderPass = framebuffer->getRenderPass();
+    auto *      framebuffer  = deferredData->gbufferFrameBuffer;
+    auto *      renderPass   = framebuffer->getRenderPass();
 
     cmdBuff->beginRenderPass(renderPass, framebuffer, _renderArea, _clearColors, camera->clearDepth, camera->clearStencil);
     cmdBuff->bindDescriptorSet(globalSet, _pipeline->getDescriptorSet());

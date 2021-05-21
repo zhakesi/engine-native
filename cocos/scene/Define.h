@@ -25,8 +25,105 @@
 
 #pragma once
 
+#include "math/Vec4.h"
+#include "math/Vec3.h"
+#include "math/Vec2.h"
+#include "math/Mat4.h"
+#include "scene/Model.h"
+#include "renderer/gfx-base/GFXShader.h"
+
 namespace cc {
 namespace scene {
+
+// As Pass.h will include Define.h, so use forward declaration.
+class Pass;
+
+struct Fog {
+    bool     enabled{false};
+    uint32_t type{0};
+    float    density{0};
+    float    start{0};
+    float    end{0};
+    float    atten{0};
+    float    top{0};
+    float    range{0};
+    Vec4     color;
+};
+
+enum class ShadowType {
+    PLANAR    = 0,
+    SHADOWMAP = 1
+};
+
+struct Shadow {
+    bool       enabled{false};
+    bool       dirty{false};
+    bool       shadowMapDirty{false};
+    bool       selfShadow{false};
+    bool       autoAdapt{false};
+    ShadowType shadowType{ShadowType::PLANAR};
+    float      distance{0};
+    Pass *     instancePass{nullptr};
+    Pass *     planarPass{nullptr};
+    float      nearValue{0};
+    float      farValue{0};
+    float      aspect{0};
+    uint32_t   pcfType{0};
+    float      bias{0};
+    uint32_t   packing{0};
+    uint32_t   linear{0};
+    float      normalBias{0};
+    float      orthoSize{0};
+
+    Vec4 color;
+    Vec2 size;
+    Vec3 normal;
+    Mat4 matLight;
+};
+
+struct SkyBox {
+    bool   enabled{false};
+    bool   isRGBE{false};
+    bool   useIBL{false};
+    Model *model{nullptr};
+};
+
+struct Ambient {
+    bool  enabled{false};
+    float skyIllum{0};
+    Vec4  skyColor;
+    Vec4  groundAlbedo;
+};
+
+struct PipelineSharedSceneData {
+    bool         isHDR{false};
+    uint32_t     shadingScale{0};
+    uint32_t     fpScale{0};
+    Ambient *    ambient{nullptr};
+    Shadow *     shadow{nullptr};
+    SkyBox *     skybox{nullptr};
+    Fog *        fog{nullptr};
+    Pass *       deferredLightPass{nullptr};
+    gfx::Shader *deferredLightPassShader{nullptr};
+    Pass *       deferredPostPass{nullptr};
+    gfx::Shader *deferredPostPassShader{nullptr};
+};
+
+struct FlatBuffer {
+    uint32_t stride{0};
+    uint32_t count{0};
+    uint32_t size{0};
+    uint8_t  *data{nullptr};
+};
+
+struct RenderingSubMesh {
+    std::vector<FlatBuffer> flatBuffers;
+};
+
+struct Root {
+    float cumulativeTime{0};
+    float frameTime{0};
+};
 
 enum class RenderPriority {
     MIN     = 0,

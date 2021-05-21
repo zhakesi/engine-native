@@ -29,10 +29,12 @@
 #include "renderer/gfx-base/GFXBuffer.h"
 #include "scene/AABB.h"
 #include "scene/Node.h"
-#include "scene/SubModel.h"
 
 namespace cc {
 namespace scene {
+
+// SubModel.h -> Define.h -> Model.h, so do not include SubModel.h here.
+class SubModel;
 
 struct InstancedAttributeBlock {
     std::vector<uint8_t *> views;
@@ -43,7 +45,7 @@ public:
     Model()              = default;
     Model(const Model &) = delete;
     Model(Model &&)      = delete;
-    virtual ~Model()     = default;
+    virtual ~Model();
     Model &operator=(const Model &) = delete;
     Model &operator=(Model &&) = delete;
 
@@ -54,46 +56,57 @@ public:
     inline void setEnabled(bool value) { _enabled = value; }
     inline void setInstmatWorldIdx(uint32_t idx) { _instmatWorldIdx = idx; }
     inline void setInstancedAttributeBlock(InstancedAttributeBlock *block) { _instanceAttributeBlock = block; }
-    inline void setInstanceBuffer(gfx::Buffer *buffer) { _instanceBuffer = buffer; }
+    //TODO: manual binding
+    inline void setInstancedBuffer(uint8_t *buffer) { _instancedBuffer = buffer; }
     inline void setLocalBuffer(gfx::Buffer *buffer) { _localBuffer = buffer; }
     inline void setLocalData(float *data) { _localData = data; }
+    inline void setNode(Node *node) { _node = node; }
     inline void setReceiveShadow(bool value) { _receiveShadow = value; }
     inline void setTransform(Node *node) { _transform = node; }
     inline void seVisFlag(uint32_t flags) { _visFlags = flags; }
-    inline void setWolrdBounds(AABB aabb) { _worldBounds = std::move(aabb); }
+    inline void setWolrdBounds(const AABB &aabb) {
+        if (!_worldBounds) {
+            _worldBounds = new AABB();
+        }
+        *_worldBounds = aabb;
+    }
 
-    inline bool                           getCastShadow() const { return _castShadow; }
-    inline bool                           getEnabled() const { return _enabled; }
-    inline uint32_t                       getInstmatWorldIdx() const { return _instmatWorldIdx; }
-    inline InstancedAttributeBlock *      getInstancedAttributeBlock() const { return _instanceAttributeBlock; }
-    inline gfx::Buffer *                  getInstanceBuffer() const { return _instanceBuffer; }
-    inline gfx::Buffer *                  getLocalBuffer() const { return _localBuffer; }
-    inline float *                        getLocalData() const { return _localData; }
-    inline const AABB &                   getModelBounds() const { return _modelBounds; }
-    inline bool                           getReceiveShadow() const { return _receiveShadow; }
-    inline const std::vector<SubModel *> &getSubModels() const { return _subModels; }
-    inline Node *                         getTransform() const { return _transform; }
-    inline bool                           getTransformUpdated() const { return _transformUpdated; }
-    inline uint32_t                       getUpdatStamp() const { return _updateStamp; }
-    inline uint32_t                       getVisFlags() const { return _visFlags; }
-    inline const AABB &                   getWorldBounds() const { return _worldBounds; }
+    inline bool                               getCastShadow() const { return _castShadow; }
+    inline bool                               getEnabled() const { return _enabled; }
+    inline uint32_t                           getInstmatWorldIdx() const { return _instmatWorldIdx; }
+    inline const std::vector<gfx::Attribute> &getInstanceAttributes() const { return _instanceAttributes; }
+    inline InstancedAttributeBlock *          getInstancedAttributeBlock() const { return _instanceAttributeBlock; }
+    inline uint8_t *                          getInstancedBuffer() const { return _instancedBuffer; }
+    inline gfx::Buffer *                      getLocalBuffer() const { return _localBuffer; }
+    inline float *                            getLocalData() const { return _localData; }
+    inline const AABB &                       getModelBounds() const { return _modelBounds; }
+    inline Node *                             getNode() const { return _node; }
+    inline bool                               getReceiveShadow() const { return _receiveShadow; }
+    inline const std::vector<SubModel *> &    getSubModels() const { return _subModels; }
+    inline Node *                             getTransform() const { return _transform; }
+    inline bool                               getTransformUpdated() const { return _transformUpdated; }
+    inline uint32_t                           getUpdatStamp() const { return _updateStamp; }
+    inline uint32_t                           getVisFlags() const { return _visFlags; }
+    inline const AABB *                       getWorldBounds() const { return _worldBounds; }
 
 private:
-    bool                     _enabled{false};
-    bool                     _castShadow{false};
-    bool                     _receiveShadow{false};
-    bool                     _transformUpdated{false};
-    uint32_t                 _instmatWorldIdx{0};
-    uint32_t                 _visFlags;
-    uint32_t                 _updateStamp{0};
-    Node *                   _transform{nullptr};
-    float *                  _localData{nullptr};
-    gfx::Buffer *            _instanceBuffer{nullptr};
-    gfx::Buffer *            _localBuffer{nullptr};
-    AABB                     _worldBounds;
-    AABB                     _modelBounds;
-    InstancedAttributeBlock *_instanceAttributeBlock{nullptr};
-    std::vector<SubModel *>  _subModels;
+    bool                        _enabled{false};
+    bool                        _castShadow{false};
+    bool                        _receiveShadow{false};
+    bool                        _transformUpdated{false};
+    uint32_t                    _instmatWorldIdx{0};
+    uint32_t                    _visFlags;
+    uint32_t                    _updateStamp{0};
+    Node *                      _transform{nullptr};
+    Node *                      _node{nullptr};
+    float *                     _localData{nullptr};
+    uint8_t *                   _instancedBuffer{nullptr};
+    gfx::Buffer *               _localBuffer{nullptr};
+    AABB *                      _worldBounds{nullptr};
+    AABB                        _modelBounds;
+    InstancedAttributeBlock *   _instanceAttributeBlock{nullptr};
+    std::vector<SubModel *>     _subModels;
+    std::vector<gfx::Attribute> _instanceAttributes;
 };
 
 } // namespace scene
