@@ -46,14 +46,14 @@ struct NodeLayout {
 
 class Node final {
 public:
-    explicit Node(void *, uint32_t length);
     Node()             = default;
     Node(const Node &) = delete;
     Node(Node &&)      = delete;
     ~Node()            = default;
     Node &operator=(const Node &) = delete;
     Node &operator=(Node &&) = delete;
-
+    
+    void initWithData(uint8_t *data);
     void updateWorldTransform();
 
     //    inline void setFlagsChanged(bool value) { _flagsChanged = value; }
@@ -63,7 +63,7 @@ public:
     //    inline void setWorldRotation(const Quaternion &rotation) { _worldRotation = rotation; }
     //    inline void setWorldScale(const Vec3 &scale) { _worldScale = scale; }
 
-    inline bool        getFlagsChanged() const { return _nodeLayout->flagsChanged != 0; }
+    inline uint32_t        getFlagsChanged() const { return _nodeLayout->flagsChanged; }
     inline uint32_t    getLayer() const { return _nodeLayout->layer; }
     inline const Mat4 &getWorldMatrix() const { return _nodeLayout->worldMatrix; }
     inline const Vec3 &getWorldPosition() const { return _nodeLayout->worldPosition; }
@@ -71,8 +71,6 @@ public:
     inline const Vec3 &getWorldScale() const { return _nodeLayout->worldScale; }
 
 private:
-    void initWithData(void *);
-
     NodeLayout *_nodeLayout{nullptr};
     bool       _dirtyFlags{false};
     bool       _hasChangeFlags{false};

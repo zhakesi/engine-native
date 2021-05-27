@@ -43,35 +43,12 @@ SE_BIND_FUNC(js_scene_Node_updateWorldTransform)
 
 SE_DECLARE_FINALIZE_FUNC(js_cc_scene_Node_finalize)
 
-static bool js_scene_Node_constructor(se::State& s)  // constructor_overloaded.c
+static bool js_scene_Node_constructor(se::State& s) // constructor.c
 {
-    CC_UNUSED bool ok = true;
-    const auto& args = s.args();
-    size_t argc = args.size();
-    do {
-        if (argc == 0) {
-            cc::scene::Node* cobj = JSB_ALLOC(cc::scene::Node);
-            s.thisObject()->setPrivateData(cobj);
-            se::NonRefNativePtrCreatedByCtorMap::emplace(cobj);
-            return true;
-        }
-    } while(false);
-    do {
-        if (argc == 2) {
-            HolderType<void*, false> arg0 = {};
-            ok &= sevalue_to_native(args[0], &arg0, s.thisObject());
-            if (!ok) { ok = true; break; }
-            HolderType<unsigned int, false> arg1 = {};
-            ok &= sevalue_to_native(args[1], &arg1, s.thisObject());
-            if (!ok) { ok = true; break; }
-            cc::scene::Node* cobj = JSB_ALLOC(cc::scene::Node, arg0.value(), arg1.value());
-            s.thisObject()->setPrivateData(cobj);
-            se::NonRefNativePtrCreatedByCtorMap::emplace(cobj);
-            return true;
-        }
-    } while(false);
-    SE_REPORT_ERROR("wrong number of arguments: %d", (int)argc);
-    return false;
+    cc::scene::Node* cobj = JSB_ALLOC(cc::scene::Node);
+    s.thisObject()->setPrivateData(cobj);
+    se::NonRefNativePtrCreatedByCtorMap::emplace(cobj);
+    return true;
 }
 SE_BIND_CTOR(js_scene_Node_constructor, __jsb_cc_scene_Node_class, js_cc_scene_Node_finalize)
 

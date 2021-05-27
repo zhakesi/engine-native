@@ -26,17 +26,26 @@
 #include "jsb_scene_manual.h"
 #include "bindings/auto/jsb_scene_auto.h"
 #include "scene/Model.h"
+#include "scene/Node.h"
 
-static bool js_scene_Model_setInstancedBuffer(se::State &s) {
-    cc::scene::Model *cobj = (cc::scene::Model *)s.nativeThisObject();
+#ifndef JSB_ALLOC
+    #define JSB_ALLOC(kls, ...) new (std::nothrow) kls(__VA_ARGS__)
+#endif
+
+#ifndef JSB_FREE
+    #define JSB_FREE(ptr) delete ptr
+#endif
+
+static bool js_scene_Model_setInstancedBuffer(se::State& s) {
+    auto* cobj = static_cast<cc::scene::Model*>(s.nativeThisObject());
     SE_PRECONDITION2(cobj, false, "js_scene_Model_setInstancedBuffer : Invalid Native Object");
-    const auto &args = s.args();
+    const auto& args = s.args();
     size_t      argc = args.size();
 
     if (argc == 1) {
         SE_PRECONDITION2(args[0].isObject() && args[0].toObject()->isArrayBuffer(), false, "js_gfx_Device_createBuffer: expected Array Buffer!");
 
-        uint8_t *data{nullptr};
+        uint8_t* data{nullptr};
         args[0].toObject()->getArrayBufferData(&data, nullptr);
         cobj->setInstancedBuffer(data);
 
@@ -48,17 +57,40 @@ static bool js_scene_Model_setInstancedBuffer(se::State &s) {
 }
 SE_BIND_FUNC(js_scene_Model_setInstancedBuffer)
 
-bool register_all_scene_manual(se::Object *obj) {
+static bool js_scene_Node_initWithData(se::State& s) // constructor_overloaded.c
+{
+    auto* cobj = static_cast<cc::scene::Node*>(s.nativeThisObject());
+    CC_UNUSED bool ok   = true;
+    const auto&    args = s.args();
+    size_t         argc = args.size();
+    do {
+        if (argc == 1) {
+            SE_PRECONDITION2(args[0].isObject() && args[0].toObject()->isTypedArray(), false, "js_scene_Node_initWithData: expected Typed Array!");
+            
+            uint8_t* data{nullptr};
+            size_t dataBytes = 0;
+            args[0].toObject()->getTypedArrayData(&data, &dataBytes);
+            cobj->initWithData(data);
+            return true;
+        }
+    } while (false);
+    SE_REPORT_ERROR("wrong number of arguments: %d", (int)argc);
+    return false;
+}
+SE_BIND_FUNC(js_scene_Node_initWithData)
+
+bool register_all_scene_manual(se::Object* obj) {
     // Get the ns
-    se::Value nrVal;
-    if (!obj->getProperty("ns", &nrVal)) {
+    se::Value nsVal;
+    if (!obj->getProperty("ns", &nsVal)) {
         se::HandleObject jsobj(se::Object::createPlainObject());
-        nrVal.setObject(jsobj);
-        obj->setProperty("ns", nrVal);
+        nsVal.setObject(jsobj);
+        obj->setProperty("ns", nsVal);
     }
-    se::Object *nr = nrVal.toObject();
+    se::Object* ns = nsVal.toObject();
 
     __jsb_cc_scene_Model_proto->defineFunction("setInstancedBuffer", _SE(js_scene_Model_setInstancedBuffer));
+    __jsb_cc_scene_Node_proto->defineFunction("initWithData", _SE(js_scene_Node_initWithData));
 
     return true;
 }
