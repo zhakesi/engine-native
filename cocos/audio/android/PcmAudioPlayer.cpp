@@ -40,6 +40,11 @@ PcmAudioPlayer::PcmAudioPlayer(AudioMixerController *controller, ICallerThreadUt
 PcmAudioPlayer::~PcmAudioPlayer() {
     ALOGV("In the destructor of PcmAudioPlayer (%p)", this);
     delete _track;
+
+    if (_audioLip) {
+        delete _audioLip;
+        _audioLip = nullptr;
+    }
 }
 
 bool PcmAudioPlayer::prepare(const std::string &url, const PcmData &decResult) {
@@ -187,6 +192,28 @@ IAudioPlayer::State PcmAudioPlayer::getState() const {
         }
     }
     return state;
+}
+
+std::vector<float> PcmAudioPlayer::getLipData() {
+    std::vector<float> lips(3);
+    lips[0] = 0;
+    lips[1] = 0;
+    lips[2] = 0;
+    AudioBufferProvider::Buffer buf;
+    buf.frameCount = 1000;
+    if (_track->getNextBuffer(&buf) || 1000 !=buf.frameCount) {
+        return lips;
+    }
+    int16_t *ptr16 = buf.i16;
+    if (!_audioLip) {
+        _audioLip = new AudioLip;
+        _audioLip->InitParamters(buf.frameCount);
+    }
+    LipWeight w = _audioLip->ComputeLipWeights(ptr16, buf.frameCount);
+    lips[0] = w._kiss;
+    lips[1] = w._press;
+    lips[2] = w._open;
+    return lips;
 }
 
 } // namespace cc

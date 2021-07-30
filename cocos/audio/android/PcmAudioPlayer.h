@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include "audio/android/IAudioPlayer.h"
 #include "audio/android/PcmData.h"
 #include "audio/android/Track.h"
+#include "audio/audio-lip/AudioLip.h"
 
 namespace cc {
 
@@ -75,6 +76,7 @@ public:
 
     virtual void setPlayEventCallback(const PlayEventCallback &playEventCallback) override;
 
+    virtual std::vector<float> getLipData() override;
     // Override Functions End
 
 private:
@@ -89,6 +91,7 @@ private:
     PlayEventCallback _playEventCallback;
     AudioMixerController *_controller;
     ICallerThreadUtils *_callerThreadUtils;
+    AudioLip *_audioLip;
 
     friend class AudioPlayerProvider;
 };

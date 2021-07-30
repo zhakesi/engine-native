@@ -355,4 +355,12 @@ void UrlAudioPlayer::destroy() {
     }
 }
 
+std::vector<float> UrlAudioPlayer::getLipData() {
+    std::vector<float> lips(3);
+    lips[0] = 0;
+    lips[1] = 0;
+    lips[2] = 0;
+    return lips;
+}
+
 } // namespace cc

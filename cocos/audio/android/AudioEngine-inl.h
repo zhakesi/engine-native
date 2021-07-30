@@ -73,7 +73,7 @@ public:
     void onPause();
 
     void setAudioFocusForAllPlayers(bool isFocus);
-
+    std::vector<float> getLipData(int audioID);
 private:
     // engine interfaces
     SLObjectItf _engineObject;

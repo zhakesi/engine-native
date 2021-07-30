@@ -387,3 +387,16 @@ void AudioEngineImpl::onResume() {
         _audioPlayerProvider->resume();
     }
 }
+
+std::vector<float> AudioEngineImpl::getLipData(int audioID) {
+    auto iter = _audioPlayers.find(audioID);
+    if (iter != _audioPlayers.end()) {
+        auto player = iter->second;
+        return player->getLipData();
+    }
+    std::vector<float> data(3);
+    data[0] = 0;
+    data[0] = 0;
+    data[0] = 0;
+    return data;
+}

@@ -312,6 +312,10 @@ public:
      */
     static bool isEnabled();
 
+    /**
+     * Get lip sync data [kiss, press, open]
+     */
+    static std::vector<float> getLipData(int audioID);
 protected:
     static void addTask(const std::function<void()> &task);
     static void remove(int audioID);

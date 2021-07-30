@@ -237,6 +237,8 @@ if(USE_AUDIO)
                      cocos/audio/AudioEngine.cpp
                      cocos/audio/include/AudioEngine.h
                      cocos/audio/include/Export.h
+                     cocos/audio/audio-lip/AudioLip.h
+                     cocos/audio/audio-lip/AudioLip.cpp
     )
     if(WINDOWS)
         cocos_source_files(

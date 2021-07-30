@@ -677,3 +677,11 @@ void AudioEngineImpl::uncacheAll() {
 bool AudioEngineImpl::_checkAudioIdValid(int audioID) {
     return _audioPlayers.find(audioID) != _audioPlayers.end();
 }
+
+std::vector<float> AudioEngineImpl::getLipData(int audioID) {
+    std::vector<float> data(3);
+    data[0] = 1;
+    data[0] = 0;
+    data[0] = 0;
+    return data;
+}

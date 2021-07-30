@@ -77,6 +77,7 @@ public:
 
     virtual void setPlayEventCallback(const PlayEventCallback &playEventCallback) override;
 
+    virtual std::vector<float> getLipData() override;
     // Override Functions EndOv
 
 private:

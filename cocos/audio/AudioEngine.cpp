@@ -569,3 +569,16 @@ void AudioEngine::setEnabled(bool isEnabled) {
 bool AudioEngine::isEnabled() {
     return _isEnabled;
 }
+
+std::vector<float> AudioEngine::getLipData(int audioID) {
+    
+    auto it = _audioIDInfoMap.find(audioID);
+    if (it != _audioIDInfoMap.end() && it->second.state != AudioState::INITIALIZING) {
+        return _audioEngineImpl->getLipData(audioID);
+    }
+    std::vector<float> dat(3);
+    dat[0] = 0;
+    dat[1] = 0;
+    dat[2] = 0;
+    return dat;
+}
