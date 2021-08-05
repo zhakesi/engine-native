@@ -31,7 +31,7 @@
 #include <algorithm>
 #include <vector>
 
-using namespace spine;
+using namespace spine; //NOLINT
 
 namespace spine {
 
@@ -76,7 +76,7 @@ void SkeletonDataMgr::setSkeletonData(const std::string &uuid, SkeletonData *dat
     if (it != _dataMap.end()) {
         releaseByUUID(uuid);
     }
-    SkeletonDataInfo *info = new SkeletonDataInfo();
+    auto *info = new SkeletonDataInfo();
     info->data = data;
     info->atlas = atlas;
     info->attachmentLoader = attachmentLoader;
@@ -101,8 +101,8 @@ void SkeletonDataMgr::releaseByUUID(const std::string &uuid) {
     _dataMap.erase(dataIt);
     if (_destroyCallback) {
         auto &texturesIndex = info->texturesIndex;
-        for (auto it = texturesIndex.begin(); it != texturesIndex.end(); it++) {
-            _destroyCallback(*it);
+        for (auto &item : info->texturesIndex) {
+            _destroyCallback(item);
         }
     }
     delete info;
