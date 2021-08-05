@@ -100,7 +100,6 @@ void SkeletonDataMgr::releaseByUUID(const std::string &uuid) {
     SkeletonDataInfo *info = dataIt->second;
     _dataMap.erase(dataIt);
     if (_destroyCallback) {
-        auto &texturesIndex = info->texturesIndex;
         for (auto &item : info->texturesIndex) {
             _destroyCallback(item);
         }
