@@ -64,7 +64,7 @@ public:
 
 } // namespace spine
 
-SkeletonDataMgr *SkeletonDataMgr::_instance = nullptr;
+SkeletonDataMgr *SkeletonDataMgr::instance = nullptr;
 
 bool SkeletonDataMgr::hasSkeletonData(const std::string &uuid) {
     auto it = _dataMap.find(uuid);
