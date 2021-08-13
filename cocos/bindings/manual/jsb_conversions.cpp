@@ -1275,6 +1275,12 @@ bool nativevalue_to_se(const cc::Rect &from, se::Value &to, se::Object *) {
 #if USE_SPINE
 
 template <>
+bool sevalue_to_native(const se::Value &val, spine::String *obj, se::Object * /*unused*/) {
+    *obj = val.toString().data();
+    return true;
+}
+
+template <>
 bool sevalue_to_native(const se::Value &v, spine::Vector<spine::String> *ret, se::Object *) {
     assert(v.isObject());
     se::Object *obj = v.toObject();
