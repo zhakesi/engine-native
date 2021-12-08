@@ -19,7 +19,7 @@ option(USE_VIDEO        "Enable VideoPlayer Component"      ON)
 option(USE_WEBVIEW      "Enable WebView Component"          OFF)
 option(USE_MIDDLEWARE   "Enable Middleware"                 ON)
 option(USE_DRAGONBONES  "Enable Dragonbones"                ON)
-option(USE_SPINE        "Enable Spine"                      ON)
+option(USE_SPINE        "Enable Spine"                      OFF)
 option(USE_PHYSICS_PHYSX        "USE PhysX Physics"         ON)
 
 if(USE_SE_JSC AND APPLE)
