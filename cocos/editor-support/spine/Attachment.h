@@ -33,6 +33,7 @@
 #include <spine/RTTI.h>
 #include <spine/SpineObject.h>
 #include <spine/SpineString.h>
+#include "AttachmentType.h"
 
 namespace spine {
 class SP_API Attachment : public SpineObject {
@@ -47,6 +48,8 @@ public:
 
 	virtual Attachment* copy() = 0;
 
+	AttachmentType type() { return _type; }
+
 	int getRefCount();
 	void reference();
 	void dereference();
@@ -54,6 +57,9 @@ public:
 private:
 	const String _name;
 	int _refCount;
+
+public:
+	AttachmentType _type;
 };
 }
 
