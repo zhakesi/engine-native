@@ -67,10 +67,11 @@ RegionAttachment::RegionAttachment(const String &name) : Attachment(name), HasRe
 	_path(),
 	_regionU(0),
 	_regionV(0),
-	_regionU2(0),
-	_regionV2(0),
+	_regionU2(1),
+	_regionV2(1),
 	_color(1, 1, 1, 1)
 {
+    _type = AttachmentType::AttachmentType_Region;
 	_vertexOffset.setSize(NUM_UVS, 0);
 	_uvs.setSize(NUM_UVS, 0);
 }

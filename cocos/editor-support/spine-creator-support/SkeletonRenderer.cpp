@@ -987,6 +987,64 @@ spine::Slot *SkeletonRenderer::findSlot(const std::string &slotName) const {
     return nullptr;
 }
 
+void SkeletonRenderer::updateRegion(const std::string &slotName, cc::middleware::Texture2D *texture) {
+    if (_skeleton) {
+        auto        slot       = _skeleton->findSlot(slotName.c_str());
+        auto attachment = slot->getAttachment();
+        if (!attachment) return;
+        // 
+        auto attachmentType = attachment->type();
+        if (attachmentType == AttachmentType::AttachmentType_Region) {
+            auto region = dynamic_cast<RegionAttachment *>(attachment);
+            region->setRegionWidth(texture->getPixelsWide());
+            region->setRegionHeight(texture->getPixelsHigh());
+            region->setRegionOriginalWidth(texture->getPixelsWide());
+            region->setRegionOriginalHeight(texture->getPixelsHigh());
+            region->setHeight(texture->getPixelsHigh());
+            region->setWidth(texture->getPixelsWide());
+            region->setUVs(0, 0, 1.0f, 1.0f, false);
+            region->updateOffset();
+            auto attachmentVertices      = reinterpret_cast<AttachmentVertices *>(region->getRendererObject());
+            attachmentVertices->_texture->release();
+            attachmentVertices->_texture = texture;
+            texture->retain();
+
+            V2F_T2F_C4F *vertices = attachmentVertices->_triangles->verts;
+            for (int i = 0, ii = 0; i < 4; ++i, ii += 2) {
+                vertices[i].texCoord.u = region->getUVs()[ii];
+                vertices[i].texCoord.v = region->getUVs()[ii + 1];
+            }
+
+        } else if (attachmentType == AttachmentType::AttachmentType_Mesh) {
+            auto mesh = dynamic_cast<MeshAttachment *>(attachment);
+            mesh->setRegionWidth(texture->getPixelsWide());
+            mesh->setRegionHeight(texture->getPixelsHigh());
+            mesh->setRegionOriginalWidth(texture->getPixelsWide());
+            mesh->setRegionOriginalHeight(texture->getPixelsHigh());
+            mesh->setHeight(texture->getPixelsHigh());
+            mesh->setWidth(texture->getPixelsWide());
+            mesh->setRegionU(0);
+            mesh->setRegionV(0);
+            mesh->setRegionU2(1.0f);
+            mesh->setRegionV2(1.0f);
+            mesh->setRegionRotate(true);
+            mesh->setRegionDegrees(0);
+            mesh->updateUVs();
+            auto attachmentVertices      = reinterpret_cast<AttachmentVertices *>(mesh->getRendererObject());
+            attachmentVertices->_texture = texture;
+            texture->retain();
+
+            V2F_T2F_C4F *vertices = attachmentVertices->_triangles->verts;
+            for (size_t i = 0, ii = 0, nn = mesh->getWorldVerticesLength(); ii < nn; ++i, ii += 2) {
+                vertices[i].texCoord.u = mesh->getUVs()[ii];
+                vertices[i].texCoord.v = mesh->getUVs()[ii + 1];
+            }
+        } else {
+            return;
+        }
+    }
+}
+
 void SkeletonRenderer::setSkin(const std::string &skinName) {
     if (_skeleton) {
         _skeleton->setSkin(skinName.empty() ? nullptr : skinName.c_str());
@@ -994,7 +1052,8 @@ void SkeletonRenderer::setSkin(const std::string &skinName) {
     }
 }
 
-void SkeletonRenderer::setSkin(const char *skinName) {
+void SkeletonRenderer::setSkin(const char
+    *skinName) {
     if (_skeleton) {
         _skeleton->setSkin(skinName);
         _skeleton->setSlotsToSetupPose();

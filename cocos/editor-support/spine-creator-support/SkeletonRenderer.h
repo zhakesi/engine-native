@@ -75,6 +75,8 @@ public:
     /* Returns 0 if the slot was not found. */
     Slot *findSlot(const std::string &slotName) const;
 
+    void updateRegion(const std::string &slotName, cc::middleware::Texture2D *texture);
+
     /* Sets the skin used to look up attachments not found in the SkeletonData defaultSkin. Attachments from the new skin are
          * attached if the corresponding attachment from the old skin was attached.
          * @param skin May be empty string ("") for no skin.*/
