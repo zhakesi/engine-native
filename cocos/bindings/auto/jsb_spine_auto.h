@@ -114,6 +114,7 @@ SE_DECLARE_FUNC(js_spine_Attachment_dereference);
 SE_DECLARE_FUNC(js_spine_Attachment_getName);
 SE_DECLARE_FUNC(js_spine_Attachment_getRefCount);
 SE_DECLARE_FUNC(js_spine_Attachment_reference);
+SE_DECLARE_FUNC(js_spine_Attachment_type);
 
 extern se::Object* __jsb_spine_Timeline_proto;
 extern se::Class* __jsb_spine_Timeline_class;

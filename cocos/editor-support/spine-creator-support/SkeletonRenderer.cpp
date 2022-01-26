@@ -991,6 +991,7 @@ void SkeletonRenderer::updateRegion(const std::string &slotName, cc::middleware:
     if (_skeleton) {
         auto        slot       = _skeleton->findSlot(slotName.c_str());
         auto attachment = slot->getAttachment();
+        if (!attachment) return;
         // 
         auto attachmentType = attachment->type();
         if (attachmentType == AttachmentType::AttachmentType_Region) {
@@ -1001,10 +1002,10 @@ void SkeletonRenderer::updateRegion(const std::string &slotName, cc::middleware:
             region->setRegionOriginalHeight(texture->getPixelsHigh());
             region->setHeight(texture->getPixelsHigh());
             region->setWidth(texture->getPixelsWide());
-            region->setRotation(0);
-            region->setUVs(0, 0, 1.0f, 1.0f, true);
+            region->setUVs(0, 0, 1.0f, 1.0f, false);
             region->updateOffset();
             auto attachmentVertices      = reinterpret_cast<AttachmentVertices *>(region->getRendererObject());
+            attachmentVertices->_texture->release();
             attachmentVertices->_texture = texture;
             texture->retain();
 
@@ -1026,7 +1027,7 @@ void SkeletonRenderer::updateRegion(const std::string &slotName, cc::middleware:
             mesh->setRegionV(0);
             mesh->setRegionU2(1.0f);
             mesh->setRegionV2(1.0f);
-            mesh->setRegionRotate(false);
+            mesh->setRegionRotate(true);
             mesh->setRegionDegrees(0);
             mesh->updateUVs();
             auto attachmentVertices      = reinterpret_cast<AttachmentVertices *>(mesh->getRendererObject());

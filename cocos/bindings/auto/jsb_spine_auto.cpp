@@ -1575,6 +1575,25 @@ static bool js_spine_Attachment_reference(se::State& s) // NOLINT(readability-id
 }
 SE_BIND_FUNC(js_spine_Attachment_reference)
 
+static bool js_spine_Attachment_type(se::State& s) // NOLINT(readability-identifier-naming)
+{
+    auto* cobj = SE_THIS_OBJECT<spine::Attachment>(s);
+    SE_PRECONDITION2(cobj, false, "js_spine_Attachment_type : Invalid Native Object");
+    const auto& args = s.args();
+    size_t argc = args.size();
+    CC_UNUSED bool ok = true;
+    if (argc == 0) {
+        auto result = static_cast<unsigned int>(cobj->type());
+        ok &= nativevalue_to_se(result, s.rval(), nullptr /*ctx*/);
+        SE_PRECONDITION2(ok, false, "js_spine_Attachment_type : Error processing arguments");
+        SE_HOLD_RETURN_VALUE(result, s.thisObject(), s.rval());
+        return true;
+    }
+    SE_REPORT_ERROR("wrong number of arguments: %d, was expecting %d", (int)argc, 0);
+    return false;
+}
+SE_BIND_FUNC(js_spine_Attachment_type)
+
 
 
 bool js_register_spine_Attachment(se::Object* obj) // NOLINT(readability-identifier-naming)
@@ -1586,6 +1605,7 @@ bool js_register_spine_Attachment(se::Object* obj) // NOLINT(readability-identif
     cls->defineFunction("getName", _SE(js_spine_Attachment_getName));
     cls->defineFunction("getRefCount", _SE(js_spine_Attachment_getRefCount));
     cls->defineFunction("reference", _SE(js_spine_Attachment_reference));
+    cls->defineFunction("type", _SE(js_spine_Attachment_type));
     cls->install();
     JSBClassType::registerClass<spine::Attachment>(cls);
 
